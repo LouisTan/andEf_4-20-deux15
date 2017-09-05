@@ -1,4 +1,4 @@
-from heapqueue.binary_heap import BinaryHeap
+#from heapqueue.binary_heap import BinaryHeap
 import queue as Q
 
 from Graph import Graph
@@ -19,10 +19,14 @@ class Node(object):
 
 def main():
     g = Graph("N15.data")
-    import Kruskal
     Kruskal.kruskal = Kruskal.Kruskal(g)
     heap = Q.PriorityQueue()
-
+    Sol = Solution(g)
+    Sol.add_edge(0,5)
+    Sol.add_edge(5,2)
+    Sol.add_edge(2,3)
+    Sol.add_edge(3,0)
+    Sol.print()
 
 
 def isN2betterThanN1(N1, N2):
