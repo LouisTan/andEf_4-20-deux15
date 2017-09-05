@@ -9,12 +9,17 @@ SOURCE = 0
 
 class Node(object):
     def __init__(self, v, sol, heuristic_cost=0):
-        self.v = None
-        self.solution = None
-        self.heuristic_cost = None
+        self.v = v
+        self.solution = sol
+        self.heuristic_cost = heuristic_cost
 
     def explore_node(self, heap):
-        raise NotImplementedError()
+        for node in self.solution.not_visited:    
+            Sol = Solution(self.solution)
+            v = self.v
+            Sol.add_edge(v,node)
+            nodeToAdd = Node(node,Sol,self.heuristic_cost)
+            heap.put(nodeToAdd)
 
 
 def main():
@@ -30,7 +35,9 @@ def main():
 
 
 def isN2betterThanN1(N1, N2):
-    raise NotImplementedError
+    f1 = N1.solution.cost + N1.heuristic_cost
+    f2 = N2.solution.cost + N2.heuristic_cost
+    return f2 < f1
 
 
 if __name__ == '__main__':
