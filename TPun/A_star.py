@@ -1,5 +1,6 @@
 #from heapqueue.binary_heap import BinaryHeap
 import queue as Q
+import time
 
 from Graph import Graph
 import Kruskal
@@ -7,16 +8,23 @@ from Solution import Solution
 
 SOURCE = 0
 
+NUMBER_NODE_CREATED = 0
+NUMBER_NODE_EXPLORED = 0
+
 class Node(object):
     def __init__(self, v, sol, heuristic_cost=0):
         self.v = v
         self.solution = sol
         self.heuristic_cost = heuristic_cost
+        global NUMBER_NODE_CREATED
+        NUMBER_NODE_CREATED = NUMBER_NODE_CREATED + 1
     
     def __lt__(self, other):
         return isN2betterThanN1(other,self)
 
     def explore_node(self, heap):
+        global NUMBER_NODE_EXPLORED
+        NUMBER_NODE_EXPLORED = NUMBER_NODE_EXPLORED + 1
         for node in self.solution.not_visited:
             if len(self.solution.not_visited) == 1 or node != SOURCE :   
                 Sol = Solution(self.solution)
@@ -27,7 +35,8 @@ class Node(object):
 
 
 def main():
-    g = Graph("N12.data")
+    debut = time.time()
+    g = Graph("N10.data")
     Kruskal.kruskal = Kruskal.Kruskal(g)
     heap = Q.PriorityQueue()
     Sol = Solution(g)
@@ -37,7 +46,11 @@ def main():
     while not heap.empty():
         node = heap.get()
         if len(node.solution.not_visited) == 0 :
+            fin = time.time()
             node.solution.print()
+            print("number of nodes created :", NUMBER_NODE_CREATED)
+            print("number of nodes explored :", NUMBER_NODE_EXPLORED)
+            print("duration :", fin-debut, "secondes")
             return
         node.explore_node(heap)
 
