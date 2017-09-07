@@ -12,26 +12,34 @@ class Node(object):
         self.v = v
         self.solution = sol
         self.heuristic_cost = heuristic_cost
+    
+    def __lt__(self, other):
+        return isN2betterThanN1(other,self)
 
     def explore_node(self, heap):
-        for node in self.solution.not_visited:    
-            Sol = Solution(self.solution)
-            v = self.v
-            Sol.add_edge(v,node)
-            nodeToAdd = Node(node,Sol,self.heuristic_cost)
-            heap.put(nodeToAdd)
+        for node in self.solution.not_visited:
+            if len(self.solution.not_visited) == 1 or node != SOURCE :   
+                Sol = Solution(self.solution)
+                v = self.v
+                Sol.add_edge(v,node)
+                nodeToAdd = Node(node,Sol,self.heuristic_cost)
+                heap.put(nodeToAdd)
 
 
 def main():
-    g = Graph("N15.data")
+    g = Graph("N12.data")
     Kruskal.kruskal = Kruskal.Kruskal(g)
     heap = Q.PriorityQueue()
     Sol = Solution(g)
-    Sol.add_edge(0,5)
-    Sol.add_edge(5,2)
-    Sol.add_edge(2,3)
-    Sol.add_edge(3,0)
-    Sol.print()
+    node = Node(SOURCE,Sol,0)
+    heap.put(node)
+
+    while not heap.empty():
+        node = heap.get()
+        if len(node.solution.not_visited) == 0 :
+            node.solution.print()
+            return
+        node.explore_node(heap)
 
 
 def isN2betterThanN1(N1, N2):
