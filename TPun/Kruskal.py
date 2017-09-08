@@ -40,4 +40,14 @@ class Kruskal(object):
         self.g = g
 
     def getMSTCost(self, sol, source):
-        raise NotImplementedError()
+        self.uf.reset()
+        cost = 0
+        MST = []
+        sortedEdges = self.g.get_sorted_edges()
+        for e in sortedEdges :
+            if (e.source in sol.not_visited or e.source==source) and e.destination in sol.not_visited:
+                if not self.uf.makes_cycle(e) :
+                    self.uf.add(e)
+                    cost = cost + e.cost
+
+        return cost
