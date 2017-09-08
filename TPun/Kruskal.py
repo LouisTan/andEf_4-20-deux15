@@ -45,9 +45,8 @@ class Kruskal(object):
         MST = []
         sortedEdges = self.g.get_sorted_edges()
         for e in sortedEdges :
-            if (e.source in sol.not_visited or e.source==source) and e.destination in sol.not_visited:
+            if (e.source in sol.not_visited or e.source==source) and (e.destination in sol.not_visited or e.destination==source):
                 if not self.uf.makes_cycle(e) :
                     self.uf.add(e)
                     cost = cost + e.cost
-
         return cost

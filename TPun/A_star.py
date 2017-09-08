@@ -38,7 +38,7 @@ class Node(object):
 
 def main():
     debut = time.time()
-    g = Graph("N15.data")
+    g = Graph("N17.data")
     Kruskal.kruskal = Kruskal.Kruskal(g)
     heap = Q.PriorityQueue()
     Sol = Solution(g)
