@@ -25,7 +25,7 @@ class Solution(object):
         self.visited.append(u)
         self.not_visited.remove(u)
 
-    def print(self):
+    def printSol(self):
         import A_star
         print (A_star.SOURCE)
         for i in self.visited:
