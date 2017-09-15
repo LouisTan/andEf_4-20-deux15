@@ -22,9 +22,21 @@ class Node(object):
         global NUMBER_NODE_CREATED
         NUMBER_NODE_CREATED = NUMBER_NODE_CREATED + 1
 
-        self.heuristic_cost = self.kruskal.getMSTCost(self.solution, self.v)
+        use_heuristique_1 = True # Kruskal
+        use_heuristique_2 = True # La distance de la ville actuelle a la ville la plus proche
+        use_heuristique_3 = True # La plus petite distance entre une ville non visitee et le point de depart
 
-        self.h = self.solution.cost + self.heuristic_cost + self.closest_unexplored_city_to_source() #+ self.closest_unexplored_city_from_current() 
+        self.h = self.solution.cost
+
+        if use_heuristique_1 :
+            self.heuristic_cost = self.kruskal.getMSTCost(self.solution, self.v)
+            self.h = self.h + self.heuristic_cost
+    
+        if use_heuristique_2 :
+            self.h = self.h + self.closest_unexplored_city_from_current()
+
+        if use_heuristique_3 :
+            self.h = self.h + self.closest_unexplored_city_to_source()
     
     def __lt__(self, other):
         return isN2betterThanN1(other,self)
@@ -63,7 +75,7 @@ class Node(object):
 
 def main():
     debut = time.time()
-    g = Graph("N15.data")
+    g = Graph("N10.data")
     Kruskal.kruskal = Kruskal.Kruskal(g)
     heap = Q.PriorityQueue()
     Sol = Solution(g)
