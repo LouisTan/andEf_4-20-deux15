@@ -1,6 +1,7 @@
 import Queue as Q
 import time
 import random
+from math import exp
 
 from Graph import Graph
 import Kruskal
@@ -39,21 +40,42 @@ def main():
     Sol = Solution(g)
     node = Node(SOURCE,Sol)
 
-    node.solution.fast_generate_solution()
+    node.solution.random_generate_solution()
 
-    node.solution.printSol()
+    print("initial random solution : ")
+
     node.solution.printSolConsideringEdges()
 
     T = 1000
+    betterSolutions = 0
+    randomChange = 0
 
-    i=0
+    while T > 1:
+        Sol2 = node.solution.generate_random_neighbor()
+        diffCost = node.solution.cost - Sol2.cost
+        if (diffCost >= 0) :
+            node.solution = Sol2
+            betterSolutions = betterSolutions + 1
+            #print("better solution found")
+        else :
+            random_number = random.random()
+            probability_to_change = exp(diffCost/T)
+            if (random_number < probability_to_change):
+              node.solution = Sol2  
+              randomChange = randomChange + 1
+              #print("random change")
 
-    #while T > 1:
-    #    random_number = random.random()
-    #    print (T," - ", i ," - ", random_number)
-    #    i=i+1
-    #    T=0.9999*T
+        T = 0.999*T
 
+    print("final solution : ")
+
+    node.solution.printSolConsideringEdges()
+
+    fin = time.time()
+
+    print("number of better solutions found : ", betterSolutions)
+    print("number of random changes : ", randomChange)
+    print("duration :", fin-debut, "seconds")
 
 if __name__ == '__main__':
     main()
