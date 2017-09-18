@@ -53,6 +53,7 @@ class Solution(object):
                     edges.remove(edge)
                     break
         print("COST -", self.cost)
+        
 
     def fast_generate_solution(self):
         while len(self.not_visited) > 0 :
