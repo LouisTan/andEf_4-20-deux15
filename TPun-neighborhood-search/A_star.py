@@ -1,5 +1,6 @@
 import Queue as Q
 import time
+import random
 
 from Graph import Graph
 import Kruskal
@@ -41,6 +42,17 @@ def main():
     node.solution.fast_generate_solution()
 
     node.solution.printSol()
+    node.solution.printSolConsideringEdges()
+
+    T = 1000
+
+    i=0
+
+    #while T > 1:
+    #    random_number = random.random()
+    #    print (T," - ", i ," - ", random_number)
+    #    i=i+1
+    #    T=0.9999*T
 
 
 if __name__ == '__main__':
