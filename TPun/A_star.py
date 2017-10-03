@@ -22,9 +22,10 @@ class Node(object):
         global NUMBER_NODE_CREATED
         NUMBER_NODE_CREATED = NUMBER_NODE_CREATED + 1
 
-        use_heuristique_1 = True # Kruskal
-        use_heuristique_2 = True # La distance de la ville actuelle a la ville la plus proche
-        use_heuristique_3 = True # La plus petite distance entre une ville non visitee et le point de depart
+        use_heuristique_1 = False # Kruskal
+        use_heuristique_2 = False # La distance de la ville actuelle a la ville la plus proche
+        use_heuristique_3 = False # La plus petite distance entre une ville non visitee et le point de depart
+        use_heuristique_bonus = True # somme des distances les plus faibles entre les villes non visitees et une autre ville non visitee
 
         self.h = self.solution.cost
 
@@ -37,6 +38,9 @@ class Node(object):
 
         if use_heuristique_3 :
             self.h = self.h + self.closest_unexplored_city_to_source()
+
+        if use_heuristique_bonus :
+            self.h = self.h + self.sum_unexplored_city_to_unexplored_city()
     
     def __lt__(self, other):
         return isN2betterThanN1(other,self)
@@ -51,6 +55,22 @@ class Node(object):
                 Sol.add_edge(v,node)
                 nodeToAdd = Node(node,Sol, self.kruskal)
                 heap.put(nodeToAdd)
+
+    def sum_unexplored_city_to_unexplored_city(self):
+        global SOURCE
+        total = 0
+        if len(self.solution.not_visited)<=1:
+            return 0
+        for node in self.solution.not_visited:
+            if (node != SOURCE) :
+                for edge in self.solution.g.get_sorted_edges():
+                    if edge.source == node and edge.destination in self.solution.not_visited:
+                        total = total + edge.cost
+                        break
+                    elif edge.destination == node and edge.source in self.solution.not_visited:
+                        total = total + edge.cost
+                        break
+        return total
 
     def closest_unexplored_city_from_current(self):
         if len(self.solution.not_visited)==0:
@@ -75,7 +95,7 @@ class Node(object):
 
 def main():
     debut = time.time()
-    g = Graph("N10.data")
+    g = Graph("N15.data")
     Kruskal.kruskal = Kruskal.Kruskal(g)
     heap = Q.PriorityQueue()
     Sol = Solution(g)
@@ -90,7 +110,7 @@ def main():
             print("number of nodes created :", NUMBER_NODE_CREATED)
             print("number of nodes explored :", NUMBER_NODE_EXPLORED)
             print("duration :", fin-debut, "seconds")
-            print("number of comparison :", NUMBER_OF_COMPARISIONS)
+            #print("number of comparison :", NUMBER_OF_COMPARISIONS)
             return
         node.explore_node(heap)
 
