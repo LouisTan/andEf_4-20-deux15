@@ -1,4 +1,4 @@
-import Queue as Q
+import queue as Q
 import time
 import random
 from math import exp
