@@ -27,14 +27,15 @@
 % trouvez qui possede le serpent
 
 
-solution(P) :-
+solution(Out) :-
      [P1, C1, A1, Po1, P2, C2, A2, P2, P3, C3, A3, Po3] ins 0..2, 
      all_different([P1,P2,P3]),
      all_different([C1,C2,C3]),
      all_different([A1,A2,A3]),
      all_different([Po1,Po2,Po3]),
      constraints([P1, C1, A1, Po1], [P2, C2, A2, P2],[P3, C3, A3, Po3]),
-     find_solution([P1, C1, A1, Po1], [P2, C2, A2, P2],[P3, C3, A3, Po3], P).
+     find_solution([P1, C1, A1, Po1], [P2, C2, A2, P2],[P3, C3, A3, Po3], P),
+     transform_output(P,Out).
      
 
 constraints([P1, C1, A1, Po1], [P2, C2, A2, P2],[P3, C3, A3, Po3]) :-
@@ -45,3 +46,8 @@ constraints([P1, C1, A1, Po1], [P2, C2, A2, P2],[P3, C3, A3, Po3]) :-
 
 find_solution([P1, C1, A1, Po1], [P2, C2, A2, P2],[P3, C3, A3, Po3], P) :-
     ((A1 #= 2), P#=P1);((A2 #= 2), P#=P2);((A3 #= 2), P#=P3).
+
+transform_output(P,Out) :-
+    (P#=0 , Out = anglais);
+    (P#=1 , Out = espagnol);
+    (P#=2 , Out = japonais).
