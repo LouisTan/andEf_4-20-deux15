@@ -280,14 +280,14 @@ find_solution1([B1, B2, B3, B4, B5],[P1, P2, P3, P4, P5] , P) :-
     ((B2 #= 4), P#=P2);
     ((B3 #= 4), P#=P3);
     ((B4 #= 4), P#=P4);
-    ((B4 #= 4), P#=P5).
+    ((B5 #= 4), P#=P5).
 
-find_solution2([A1, A2, A3, BA, A5],[P1, P2, P3, P4, P5] , P) :-
+find_solution2([A1, A2, A3, A4, A5],[P1, P2, P3, P4, P5] , P) :-
     ((A1 #= 4), P#=P1);
     ((A2 #= 4), P#=P2);
     ((A3 #= 4), P#=P3);
     ((A4 #= 4), P#=P4);
-    ((A4 #= 4), P#=P5).
+    ((A5 #= 4), P#=P5).
 
 transform_output(P,Out) :-
     (P#=0 , Out = anglais);
