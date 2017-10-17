@@ -1,3 +1,8 @@
+clc :- nl,nl,nl,nl,nl,nl,nl,nl,nl,nl,
+	   nl,nl,nl,nl,nl,nl,nl,nl,nl,nl,
+	   nl,nl,nl,nl,nl,nl,nl,nl,nl,nl,
+	   nl,nl,nl,nl,nl,nl,nl,nl,nl,nl.
+
 % 3.1
 animal(chien). 
 animal(chat). 

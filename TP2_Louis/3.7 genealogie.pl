@@ -1,3 +1,8 @@
+clc :- nl,nl,nl,nl,nl,nl,nl,nl,nl,nl,
+	   nl,nl,nl,nl,nl,nl,nl,nl,nl,nl,
+	   nl,nl,nl,nl,nl,nl,nl,nl,nl,nl,
+	   nl,nl,nl,nl,nl,nl,nl,nl,nl,nl.
+
 % 3.7
 homme(hugo).
 homme(loic).
@@ -85,3 +90,9 @@ frere(X,Y) :-
 soeur(X,Y) :-
 	siblings(X,Y),
 	femme(X).
+
+%oncle
+%tante
+%niece
+%neveu
+
