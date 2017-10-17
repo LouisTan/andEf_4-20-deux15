@@ -50,4 +50,22 @@ max3(X,Y,Z,M) :-
 	write('Les valeurs sont identiques').
 
 % 3 d(F,X,G) :-
-	
+
+% 4.8
+longueur([],0).
+
+longueur([_|T],N) :-
+	longueur(T,N1), N is N1+1.
+
+max([],0).
+
+max(L,M) :-
+	L=[E|N],
+	max(N,P),
+	max2(E,P,M).
+
+%somme(L,S) :-
+%zip(L1,L2,R) :-
+%enumerate(N,L) :-
+%rend monnaie(Argent,Prix)
+
