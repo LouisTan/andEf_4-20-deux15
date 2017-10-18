@@ -45,37 +45,28 @@
 contraint_init([P1, P2, P3, P4, P5]) :-
     P1 #= 0, P2 #= 1, P3 #= 2, P4 #= 3, P5 #= 4.  
 
+contraint_two_argument([Arg1_1,Arg1_2,Arg1_3,Arg1_4,Arg1_5], Val1, [Arg2_1,Arg2_2,Arg2_3,Arg2_4,Arg2_5], Val2) :-
+    (Arg1_1 #= Val1 , Arg2_1 #= Val2);
+    (Arg1_2 #= Val1 , Arg2_2 #= Val2);
+    (Arg1_3 #= Val1 , Arg2_3 #= Val2);
+    (Arg1_4 #= Val1 , Arg2_4 #= Val2);
+    (Arg1_5 #= Val1 , Arg2_5 #= Val2).
+
 %1 L'Anglais habite la maison rouge.
-contraint_1([P1, P2, P3, P4, P5],[C1, C2, C3, C4, C5]) :- 
-    (P1 #= 0 , C1 #= 0);
-    (P2 #= 0 , C2 #= 0);
-    (P3 #= 0 , C3 #= 0);
-    (P4 #= 0 , C4 #= 0);
-    (P5 #= 0 , C5 #= 0).
+contraint_1(P,C) :- 
+    contraint_two_argument(P,0,C,0).
 
 %2 L'Espagnol a un chien.
-contraint_2([P1, P2, P3, P4, P5],[A1, A2, A3, A4, A5]) :- 
-    (P1 #= 1 , A1 #= 0);
-    (P2 #= 1 , A2 #= 0);
-    (P3 #= 1 , A3 #= 0);
-    (P4 #= 1 , A4 #= 0);
-    (P5 #= 1 , A5 #= 0).
+contraint_2(P,A) :- 
+    contraint_two_argument(P,1,A,0).
 
 %3 Dans la maison verte, on boit du cafe.
-contraint_3([C1, C2, C3, C4, C5],[B1, B2, B3, B4, B5]) :- 
-    (C1 #= 4 , B1 #= 0);
-    (C2 #= 4 , B2 #= 0);
-    (C3 #= 4 , B3 #= 0);
-    (C4 #= 4 , B4 #= 0);
-    (C5 #= 4 , B5 #= 0).
+contraint_3(C,B) :- 
+    contraint_two_argument(C,4,B,0).
 
 %4 L'Ukrainien boit du the.
-contraint_4([P1, P2, P3, P4, P5],[B1, B2, B3, B4, B5]) :- 
-    (P1 #= 2 , B1 #= 1);
-    (P2 #= 2 , B2 #= 1);
-    (P3 #= 2 , B3 #= 1);
-    (P4 #= 2 , B4 #= 1);
-    (P5 #= 2 , B5 #= 1).
+contraint_4(P,B) :- 
+    contraint_two_argument(P,2,B,1).
 
 %5 La maison verte est immediatement a droite de la maison blanche.
 contraint_5([C1, C2, C3, C4, C5],[Po1, Po2, Po3, Po4, Po5]) :- 
@@ -105,36 +96,20 @@ contraint_5([C1, C2, C3, C4, C5],[Po1, Po2, Po3, Po4, Po5]) :-
     (C5 #= 4 , C4 #= 2 , Po5 #= Po4 + 1).
 
 %6 Le sculpteur eleve des escargots.
-contraint_6([M1, M2, M3, M4, M5],[A1, A2, A3, A4, A5]) :- 
-    (M1 #= 0 , A1 #= 1);
-    (M2 #= 0 , A2 #= 1);
-    (M3 #= 0 , A3 #= 1);
-    (M4 #= 0 , A4 #= 1);
-    (M5 #= 0 , A5 #= 1).
+contraint_6(M,A) :- 
+    contraint_two_argument(M,0,A,1).
 
 %7 Le diplomate habite la maison jaune.
-contraint_7([M1, M2, M3, M4, M5],[C1, C2, C3, C4, C5]) :- 
-    (M1 #= 1 , C1 #= 3);
-    (M2 #= 1 , C2 #= 3);
-    (M3 #= 1 , C3 #= 3);
-    (M4 #= 1 , C4 #= 3);
-    (M5 #= 1 , C5 #= 3).
+contraint_7(M,C) :- 
+    contraint_two_argument(M,1,C,3).
 
 %8 Dans la maison du milieu, on boit du lait.
-contraint_8([Po1, Po2, Po3, Po4, Po5],[B1, B2, B3, B4, B5]) :- 
-    (Po1 #= 2 , B1 #= 2);
-    (Po2 #= 2 , B2 #= 2);
-    (Po3 #= 2 , B3 #= 2);
-    (Po4 #= 2 , B4 #= 2);
-    (Po5 #= 2 , B5 #= 2).
+contraint_8(Po,B) :- 
+    contraint_two_argument(Po,2,B,2).
 
 %9 Le Norvegien habite la premiere maison a gauche.
-contraint_9([P1, P2, P3, P4, P5],[Po1, Po2, Po3, Po4, Po5]) :- 
-    (P1 #= 3 , Po1 #= 0);
-    (P2 #= 3 , Po2 #= 0);
-    (P3 #= 3 , Po3 #= 0);
-    (P4 #= 3 , Po4 #= 0);
-    (P5 #= 3 , Po5 #= 0).
+contraint_9(P,Po) :- 
+    contraint_two_argument(P,3,Po,0).
 
 %10 Le medecin habite une maison voisine de celle ou demeure le proprietaire du renard.
 contraint_10([M1, M2, M3, M4, M5],[A1, A2, A3, A4, A5],[Po1, Po2, Po3, Po4, Po5]) :- 
@@ -191,20 +166,12 @@ contraint_11([M1, M2, M3, M4, M5],[A1, A2, A3, A4, A5],[Po1, Po2, Po3, Po4, Po5]
     (M5 #= 1 , A4 #= 3 , (Po5 #= Po4 + 1 ; Po5 #= Po4 - 1)).
 
 %12 Le violoniste boit du jus d'orange.
-contraint_12([M1, M2, M3, M4, M5],[B1, B2, B3, B4, B5]) :- 
-    (M1 #= 3 , B1 #= 3);
-    (M2 #= 3 , B2 #= 3);
-    (M3 #= 3 , B3 #= 3);
-    (M4 #= 3 , B4 #= 3);
-    (M5 #= 3 , B5 #= 3).
+contraint_12(M,B) :- 
+    contraint_two_argument(M,3,B,3).
 
 %13 Le Japonais est acrobate.
-contraint_13([P1, P2, P3, P4, P5],[M1, M2, M3, M4, M5]) :- 
-    (P1 #= 4 , M1 #= 4);
-    (P2 #= 4 , M2 #= 4);
-    (P3 #= 4 , M3 #= 4);
-    (P4 #= 4 , M4 #= 4);
-    (P5 #= 4 , M5 #= 4).
+contraint_13(P,M) :- 
+    contraint_two_argument(P,4,M,4).
 
 %14 Le Norvegien habite a cote de la maison bleue.
 contraint_14([P1, P2, P3, P4, P5],[C1, C2, C3, C4, C5],[Po1, Po2, Po3, Po4, Po5]) :- 
