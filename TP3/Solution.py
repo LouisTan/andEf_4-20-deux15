@@ -39,7 +39,6 @@ class Solution(object):
         vis = np.array(self.visited)
         vis[range(i + 1, j + 1)] = vis[range(j, i, -1)]
         self.visited = list(vis)
-        self.printf()
 
     def get_cost(self, Source):
         v = Source

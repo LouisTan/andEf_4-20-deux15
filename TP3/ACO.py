@@ -23,7 +23,7 @@ class ACO(object):
         self.pheromone = np.ones((self.graph.N, self.graph.N))
 
     def get_next_city(self, sol):
-        pass
+        raise NotImplementedError()
 
     def heuristic2opt(self, sol):
         # https://en.wikipedia.org/wiki/2-opt
