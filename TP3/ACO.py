@@ -23,10 +23,22 @@ class ACO(object):
         self.pheromone = np.ones((self.graph.N, self.graph.N))
 
     def get_next_city(self, sol):
-        raise NotImplementedError()
+        pass
 
     def heuristic2opt(self, sol):
-        raise NotImplementedError()
+        # https://en.wikipedia.org/wiki/2-opt
+        n = len(sol.visited)
+        best_distance = sol.cost
+        print('> Best distance so far is %d ' % sol.cost)
+
+        for i in range(-1, n-1):
+            for j in range(i+1, n-1):
+                sol.inverser_ville(i, j)
+                new_distance = sol.get_cost(SOURCE)
+                if new_distance < best_distance:
+                    sol.cost = new_distance
+                    best_distance = new_distance
+                    print('> Best distance so far is %d ' % sol.cost)
 
     def global_update(self, sol):
         raise NotImplementedError()
