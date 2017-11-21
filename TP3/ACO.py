@@ -1,4 +1,5 @@
 import numpy as np
+import itertools as it
 
 from Graph import Graph
 from Solution import Solution
@@ -26,19 +27,17 @@ class ACO(object):
         raise NotImplementedError()
 
     def heuristic2opt(self, sol):
-        # https://en.wikipedia.org/wiki/2-opt
-        n = len(sol.visited)
         best_distance = sol.cost
         print('> Best distance so far is %d ' % sol.cost)
 
-        for i in range(-1, n-1):
-            for j in range(i+1, n-1):
-                sol.inverser_ville(i, j)
-                new_distance = sol.get_cost(SOURCE)
-                if new_distance < best_distance:
-                    sol.cost = new_distance
-                    best_distance = new_distance
-                    print('> Best distance so far is %d ' % sol.cost)
+        for values in it.permutations(sol.visited[:-1]):
+            sol.visited = list(values)
+            sol.visited.append(SOURCE)
+            new_distance = sol.get_cost(SOURCE)
+            if new_distance < best_distance:
+                sol.cost = new_distance
+                best_distance = new_distance
+                print('> Best distance so far is %d ' % sol.cost)
 
     def global_update(self, sol):
         raise NotImplementedError()

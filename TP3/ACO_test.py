@@ -46,13 +46,13 @@ def test_global_update():
     s.add_edge(1, 0)
     aco.pheromone[:, :] = 1
     aco.global_update(s)
+    print(aco.pheromone)
     assert abs(aco.pheromone[0, 3] - 0.9) < 1e-3
     assert abs(aco.pheromone[1, 2] - 0.9) < 1e-3
-    # print(abs(aco.pheromone[0, 2] - 0.9))
-    assert abs(aco.pheromone[0, 2] - 0.9) < 1e-3
-    assert abs(aco.pheromone[2, 3] - 0.9) < 1e-3
-    assert abs(aco.pheromone[3, 1] - 0.9) < 1e-3
-    assert abs(aco.pheromone[1, 0] - 0.9) < 1e-3
+    assert abs(aco.pheromone[0, 2] - 0.91) < 1e-3
+    assert abs(aco.pheromone[2, 3] - 0.91) < 1e-3
+    assert abs(aco.pheromone[3, 1] - 0.91) < 1e-3
+    assert abs(aco.pheromone[1, 0] - 0.91) < 1e-3
     print('ok')
 
 
