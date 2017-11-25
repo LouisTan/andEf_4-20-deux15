@@ -24,7 +24,7 @@ class Solution(object):
         self.visited.append(u)
         self.not_visited.remove(u)
 
-    def print(self):
+    def printf(self):
         s = '['
         for i in self.visited:
             s += str(i) + ', '
@@ -33,6 +33,7 @@ class Solution(object):
         print(s)
         print('cost: ' + str(self.cost))
 
+    # Non-utilise
     def inverser_ville(self, i, j):
         if j < i:
             return self.inverser_ville(j, i)
