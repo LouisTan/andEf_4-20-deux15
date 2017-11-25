@@ -67,8 +67,6 @@ class ACO(object):
                 if a[3][i] >= randNumb:
                     return a[0][i]
 
-        raise NotImplementedError()
-
     def heuristic2opt(self, sol):
         best_distance = sol.cost
         print('> Best distance so far is %d ' % sol.cost)

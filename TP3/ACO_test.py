@@ -74,7 +74,7 @@ def test_next_city():
 
 
 if __name__ == '__main__':
-    #test_heuristic2opt()
+    test_heuristic2opt()
     #test_global_update()
     #test_local_update()
     test_next_city()
