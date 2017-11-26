@@ -93,7 +93,12 @@ class ACO(object):
             self.pheromone[sol.visited[ville+1], sol.visited[ville]] = self.pheromone[sol.visited[ville+1], sol.visited[ville]] + self.parameter_rho/sol.cost
 
     def local_update(self, sol):
-        raise NotImplementedError()
+        self.pheromone[sol.visited[len(sol.visited)-1], sol.visited[0]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[len(sol.visited)-1], sol.visited[0]]) + (self.parameter_phi*self.pheromone_init[sol.visited[len(sol.visited)-1], sol.visited[0]])
+        self.pheromone[sol.visited[0], sol.visited[len(sol.visited)-1]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[0], sol.visited[len(sol.visited)-1]]) + (self.parameter_phi*self.pheromone_init[sol.visited[0], sol.visited[len(sol.visited)-1]])
+        
+        for ville in range (0,len(sol.visited)-1):
+            self.pheromone[sol.visited[ville], sol.visited[ville+1]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[ville], sol.visited[ville+1]]) + (self.parameter_phi*self.pheromone_init[sol.visited[ville], sol.visited[ville+1]])
+            self.pheromone[sol.visited[ville+1], sol.visited[ville]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[ville+1], sol.visited[ville]]) + (self.parameter_phi*self.pheromone_init[sol.visited[ville+1], sol.visited[ville]])
 
     def runACO(self, maxiteration):
         raise NotImplementedError()
