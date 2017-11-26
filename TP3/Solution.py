@@ -33,13 +33,16 @@ class Solution(object):
         print(s)
         print('cost: ' + str(self.cost))
 
-    # Non-utilise
     def inverser_ville(self, i, j):
         if j < i:
             return self.inverser_ville(j, i)
         vis = np.array(self.visited)
         vis[range(i + 1, j + 1)] = vis[range(j, i, -1)]
         self.visited = list(vis)
+        self.cost = self.g.get_edge(self.visited[len(self.visited)-1],self.visited[0]).cost
+        for k in range (0,len(self.visited)-1):
+            self.cost = self.cost + self.g.get_edge(self.visited[k],self.visited[k+1]).cost
+        
 
     def get_cost(self, Source):
         v = Source

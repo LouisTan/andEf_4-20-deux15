@@ -33,7 +33,7 @@ class ACO(object):
         # On recupere la ville actuelle
         # S'il n'y a aucune ville deja visitée, on considere la ville "0" comme ville actuelle"    
         if (len(sol.visited) == 0):
-            actualCity = sol.not_visited[0]
+            actualCity = SOURCE
         # Si au moins une ville a deja étée visitée, alors la derniere ville dans la liste des villes visitées est la ville actuelle
         else :
             actualCity = sol.visited[len(sol.visited)-1]
@@ -60,7 +60,7 @@ class ACO(object):
             a[2][0] = a[1][0]/totalProb
             a[3][0] = a[2][0]
             if a[3][0] >= randNumb:
-                    return a[0][0]
+                return a[0][0]
             for i in range (1,len(a[0])):
                 a[2][i] = a[1][i]/totalProb
                 a[3][i] = a[3][i-1] + a[2][i]
@@ -68,17 +68,32 @@ class ACO(object):
                     return a[0][i]
 
     def heuristic2opt(self, sol):
-        best_distance = sol.cost
-        #print('> Best distance so far is %d ' % sol.cost)
 
-        for values in it.permutations(sol.visited[:-1]):
-            sol.visited = list(values)
-            sol.visited.append(SOURCE)
-            new_distance = sol.get_cost(SOURCE)
-            if new_distance < best_distance:
-                sol.cost = new_distance
-                best_distance = new_distance
-                #print('> Best distance so far is %d ' % sol.cost)
+        permutationhappened = True
+        #print('> Best distance so far 1 is %d ' % sol.cost)
+        while permutationhappened :
+            permutationhappened = False
+            for i in range (0,len(sol.visited)-1):
+                for j in range (i+1,len(sol.visited)):
+                    tempSol = Solution(sol)
+                    tempSol.inverser_ville(i,j)
+                    if tempSol.cost < sol.cost :
+                        permutationhappened = True
+                        sol.visited = tempSol.visited
+                        sol.cost = tempSol.cost
+                        #print('> Best distance so far 2 is %d ' % sol.cost)
+                        break
+                        break
+
+#       best_distance = sol.cost
+#        for values in it.permutations(sol.visited[:-1]):
+#            sol.visited = list(values)
+#            sol.visited.append(SOURCE)
+#            new_distance = sol.get_cost(SOURCE)
+#            if new_distance < best_distance:
+#                sol.cost = new_distance
+#                best_distance = new_distance
+#                #print('> Best distance so far is %d ' % sol.cost)
 
     def global_update(self, sol):
         for length in range(0, self.graph.N):
@@ -101,8 +116,50 @@ class ACO(object):
             self.pheromone[sol.visited[ville+1], sol.visited[ville]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[ville+1], sol.visited[ville]]) + (self.parameter_phi*self.pheromone_init[sol.visited[ville+1], sol.visited[ville]])
 
     def runACO(self, maxiteration):
-        raise NotImplementedError()
 
-# if __name__ == '__main__':
-#     aco = ACO(0.9, 2, 0.1, 0.1, 10, 'N12.data')
-#     aco.runACO(50)
+        for iteration in range (0, maxiteration):
+            ants = []
+            print("iteration : "+str(iteration))
+            for k in range (0, self.parameter_K) :
+                ant = self.build_sol()
+                self.heuristic2opt(ant)
+                print("   fourmis : "+str(k)+" cost : "+str(ant.cost))
+                ants.append(ant)
+                if ant.cost < self.best.cost :
+                    self.best = ant
+
+            self.global_update(self.best)
+            for k in range (0, len(ants)) :
+                self.local_update(ants[k])
+
+        return self.best
+
+    def build_sol(self) :
+
+        s = Solution(self.graph)
+
+        s.not_visited.remove(SOURCE)
+
+        while (len(s.not_visited) > 0) :
+            if (len(s.visited) == 0):
+                actualCity = SOURCE
+            else :
+                actualCity = s.visited[len(s.visited)-1]
+
+            # Loop act as a do-while
+            #while True:       
+            cityToVisit = self.get_next_city(s)
+            #    if cityToVisit != origin or len(s.not_visited) == 1 :
+            #        break
+
+            s.add_edge(int(actualCity),int(cityToVisit))
+
+        s.not_visited.append(SOURCE)
+        s.add_edge(int(s.visited[len(s.visited)-1]), SOURCE)
+
+        return s
+
+
+if __name__ == '__main__':
+    aco = ACO(0.9, 2, 0.1, 0.1, 10, 'testa')
+    print(aco.runACO(50).cost)
