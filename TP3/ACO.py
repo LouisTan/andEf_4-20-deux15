@@ -159,7 +159,7 @@ class ACO(object):
         for iteration in range (0, maxiteration):
             ants = []
             if iteration%10 == 0 :
-                log_gen("iteration : "+str(iteration))
+                log_gen("iteration : %s, current best cost is : %s" % (iteration, self.best.cost))
             for k in range (0, self.parameter_K) :
                 ant = self.build_sol()
                 self.heuristic2opt(ant)
@@ -208,11 +208,12 @@ def printResultsACO(aco, time, bestCost):
 
 if __name__ == '__main__':
 
-    q0 = 0.8
-    Beta = 4
-    rho = 0.5
-    phi = 0.3
-    K = 5
+    # Paremetres a modifier
+    q0 = 0.8 # entre 0 et 1 par paliers de 0.1
+    Beta = 4 # entre 0 et ? par paliers de ?
+    rho = 0.5 # entre 0 et 1 par paliers de 0.1
+    phi = 0.3 # entre 0 et 1 par paliers de 0.1
+    K = 5 # entre 1 et ? par paliers de ?
 
     executionTime = []
     bestValue = []
@@ -221,7 +222,7 @@ if __name__ == '__main__':
         print("Running ACO number : %s" % (x + 1))
         debut = time.time()
         aco = ACO(q0, Beta, rho, phi, K, 'qatar')
-        bestCost = aco.runACO(3).cost
+        bestCost = aco.runACO(250).cost
         fin = time.time()
         executionTime.append(fin-debut)
         bestValue.append(bestCost)
