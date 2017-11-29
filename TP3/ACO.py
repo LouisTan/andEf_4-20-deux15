@@ -7,7 +7,7 @@ import random
 import time
 
 SOURCE = 0
-DEBUG_GENERAL = True
+DEBUG_GENERAL = False
 DEBUG_PRECISE = False
 
 def log_gen(s):
@@ -209,22 +209,24 @@ def printResultsACO(aco, time, bestCost):
 if __name__ == '__main__':
 
     # Paremetres a modifier
-    q0 = 0.8 # entre 0 et 1 par paliers de 0.1
-    Beta = 4 # entre 0 et ? par paliers de ?
-    rho = 0.5 # entre 0 et 1 par paliers de 0.1
-    phi = 0.3 # entre 0 et 1 par paliers de 0.1
-    K = 5 # entre 1 et ? par paliers de ?
+    q0 = 0.9 # entre 0 et 1 par paliers de 0.1
+    Beta = 2 # entre 0 et ? par paliers de ?
+    rho = 0.5 # entre 0.1 et 0.9 par paliers de 0.1
+    phi = 0.3 # entre 0.1 et 1 par paliers de 0.1
+    K = 4 # entre 2 et 20 par paliers de 2
 
-    executionTime = []
-    bestValue = []
+    for rho in (0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9) :
 
-    for x in range (0,5) :
-        print("Running ACO number : %s" % (x + 1))
-        debut = time.time()
-        aco = ACO(q0, Beta, rho, phi, K, 'qatar')
-        bestCost = aco.runACO(250).cost
-        fin = time.time()
-        executionTime.append(fin-debut)
-        bestValue.append(bestCost)
-    
-    printResultsACO(aco,np.mean(executionTime),np.mean(bestValue))
+        executionTime = []
+        bestValue = []
+
+        for x in range (0,5) :
+            #print("Running ACO number : %s" % (x + 1))
+            debut = time.time()
+            aco = ACO(q0, Beta, rho, phi, K, 'qatar')
+            bestCost = aco.runACO(250).cost
+            fin = time.time()
+            executionTime.append(fin-debut)
+            bestValue.append(bestCost)
+        
+        printResultsACO(aco,np.mean(executionTime),np.mean(bestValue))
