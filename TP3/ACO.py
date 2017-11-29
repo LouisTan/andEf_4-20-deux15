@@ -12,11 +12,11 @@ DEBUG_PRECISE = False
 
 def log_gen(s):
     if DEBUG_GENERAL:
-        print(s)
+        print("   "+s)
 
 def log_pre(s):
     if DEBUG_PRECISE:
-        print(s)
+        print("   "+s)
 
 class ACO(object):
     def __init__(self, q0, beta, rho, phi, K, data):
@@ -36,13 +36,11 @@ class ACO(object):
         self.pheromone = np.ones((self.graph.N, self.graph.N))*l
 
     def get_next_city(self, sol):
-        if DEBUG_PRECISE :
-            log_pre("getting next city ... (visited : " + str(len(sol.visited)) + " - not visited : " +str(len(sol.not_visited))+")")
+        log_pre("getting next city ... (visited : " + str(len(sol.visited)) + " - not visited : " +str(len(sol.not_visited))+")")
 
         # S'il ne reste plus qu'une ville a visiter, on visite celle-ci
         if (len(sol.not_visited) == 1):
-            if DEBUG_PRECISE :
-                log_pre("   done getting next city")
+            log_pre("   done getting next city")
             return sol.not_visited[0]
 
         # On recupere la ville actuelle
@@ -66,8 +64,7 @@ class ACO(object):
 
         # cas ou q <= q0
         if q <= self.parameter_q0 :
-            if DEBUG_PRECISE :
-                log_pre("   done getting next city")
+            log_pre("   done getting next city")
             return a[0][np.argmax(a[1])]
 
         else :
@@ -77,21 +74,18 @@ class ACO(object):
             a[2][0] = a[1][0]/totalProb
             a[3][0] = a[2][0]
             if a[3][0] >= randNumb:
-                if DEBUG_PRECISE :
-                    log_pre("   done getting next city")
+                log_pre("   done getting next city")
                 return a[0][0]
             for i in range (1,len(a[0])):
                 a[2][i] = a[1][i]/totalProb
                 a[3][i] = a[3][i-1] + a[2][i]
                 if a[3][i] >= randNumb:
-                    if DEBUG_PRECISE :
-                        log_pre("   done getting next city")
+                    log_pre("   done getting next city")
                     return a[0][i]
 
     def heuristic2opt(self, sol):
 
-        if DEBUG_PRECISE :
-            log_pre("heuristic 2 opt ...")
+        log_pre("heuristic 2 opt ...")
 
         permutationhappened = True
         #print('> Best distance so far 1 is %d ' % sol.cost)
@@ -118,8 +112,7 @@ class ACO(object):
                         break
                         break
         
-        if DEBUG_PRECISE :
-            log_pre("   done heuristic 2 opt")
+        log_pre("   done heuristic 2 opt")
 #       best_distance = sol.cost
 #        for values in it.permutations(sol.visited[:-1]):
 #            sol.visited = list(values)
@@ -132,8 +125,7 @@ class ACO(object):
 
     def global_update(self, sol):
 
-        if DEBUG_PRECISE :
-            log_pre("global update ...")
+        log_pre("global update ...")
 
         for length in range(0, self.graph.N):
             for height in range(0, self.graph.N):
@@ -146,12 +138,10 @@ class ACO(object):
             self.pheromone[sol.visited[ville], sol.visited[ville+1]] = self.pheromone[sol.visited[ville], sol.visited[ville+1]] + self.parameter_rho/sol.cost
             self.pheromone[sol.visited[ville+1], sol.visited[ville]] = self.pheromone[sol.visited[ville+1], sol.visited[ville]] + self.parameter_rho/sol.cost
 
-        if DEBUG_PRECISE :
-            log_pre("   done global update")
+        log_pre("   done global update")
 
     def local_update(self, sol):
-        if DEBUG_PRECISE :
-            log_pre("local update ...")
+        log_pre("local update ...")
 
         self.pheromone[sol.visited[len(sol.visited)-1], sol.visited[0]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[len(sol.visited)-1], sol.visited[0]]) + (self.parameter_phi*self.pheromone_init[sol.visited[len(sol.visited)-1], sol.visited[0]])
         self.pheromone[sol.visited[0], sol.visited[len(sol.visited)-1]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[0], sol.visited[len(sol.visited)-1]]) + (self.parameter_phi*self.pheromone_init[sol.visited[0], sol.visited[len(sol.visited)-1]])
@@ -160,23 +150,20 @@ class ACO(object):
             self.pheromone[sol.visited[ville], sol.visited[ville+1]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[ville], sol.visited[ville+1]]) + (self.parameter_phi*self.pheromone_init[sol.visited[ville], sol.visited[ville+1]])
             self.pheromone[sol.visited[ville+1], sol.visited[ville]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[ville+1], sol.visited[ville]]) + (self.parameter_phi*self.pheromone_init[sol.visited[ville+1], sol.visited[ville]])
 
-        if DEBUG_PRECISE :
-            log_pre("   done local update")
+        log_pre("   done local update")
 
     def runACO(self, maxiteration):
 
-        if DEBUG_PRECISE :
-            log_pre("running ACO ...")
+        log_pre("running ACO ...")
 
         for iteration in range (0, maxiteration):
             ants = []
-            if DEBUG_GENERAL :
+            if iteration%10 == 0 :
                 log_gen("iteration : "+str(iteration))
             for k in range (0, self.parameter_K) :
                 ant = self.build_sol()
                 self.heuristic2opt(ant)
-                if DEBUG_GENERAL :
-                    log_gen("   fourmis : "+str(k)+" cost : "+str(ant.cost))
+                #log_gen("   fourmis : "+str(k)+" cost : "+str(ant.cost))
                 ants.append(ant)
                 if ant.cost < self.best.cost :
                     self.best = ant
@@ -185,7 +172,6 @@ class ACO(object):
             for k in range (0, len(ants)) :
                 self.local_update(ants[k])
 
-        if DEBUG_PRECISE :
             log_pre("   done running ACO")
 
         return self.best
@@ -215,19 +201,29 @@ class ACO(object):
 
         return s
 
-def printResultsACO(aco):
+def printResultsACO(aco, time, bestCost):
+    print("(%s,%s,%s,%s,%s)" % (aco.parameter_q0, aco.parameter_beta, aco.parameter_rho, aco.parameter_phi, aco.parameter_K))
+    print("   mean execution time in seconds : %s" % (time))
+    print("   mean best cost : %s" % (bestCost))
 
 if __name__ == '__main__':
+
     q0 = 0.8
     Beta = 4
     rho = 0.5
     phi = 0.3
-    K = 10
+    K = 5
+
     executionTime = []
     bestValue = []
+
     for x in range (0,5) :
+        print("Running ACO number : %s" % (x + 1))
         debut = time.time()
         aco = ACO(q0, Beta, rho, phi, K, 'qatar')
-        aco.runACO(1)
+        bestCost = aco.runACO(3).cost
         fin = time.time()
-    print(aco.runACO(50).cost)
+        executionTime.append(fin-debut)
+        bestValue.append(bestCost)
+    
+    printResultsACO(aco,np.mean(executionTime),np.mean(bestValue))
