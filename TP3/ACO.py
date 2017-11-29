@@ -4,9 +4,19 @@ import itertools as it
 from Graph import Graph
 from Solution import Solution
 import random
+import time
 
 SOURCE = 0
+DEBUG_GENERAL = True
+DEBUG_PRECISE = False
 
+def log_gen(s):
+    if DEBUG_GENERAL:
+        print(s)
+
+def log_pre(s):
+    if DEBUG_PRECISE:
+        print(s)
 
 class ACO(object):
     def __init__(self, q0, beta, rho, phi, K, data):
@@ -21,13 +31,18 @@ class ACO(object):
         self.best.cost = 99999999999999
         self.pheromone_init = np.ones((self.graph.N, self.graph.N))
         f = open(data + '_init', 'r')
-        self.pheromone_init *= float(f.readline())
-        self.pheromone = np.ones((self.graph.N, self.graph.N))
+        l= float(f.readline())
+        self.pheromone_init *= l
+        self.pheromone = np.ones((self.graph.N, self.graph.N))*l
 
     def get_next_city(self, sol):
+        if DEBUG_PRECISE :
+            log_pre("getting next city ... (visited : " + str(len(sol.visited)) + " - not visited : " +str(len(sol.not_visited))+")")
 
         # S'il ne reste plus qu'une ville a visiter, on visite celle-ci
         if (len(sol.not_visited) == 1):
+            if DEBUG_PRECISE :
+                log_pre("   done getting next city")
             return sol.not_visited[0]
 
         # On recupere la ville actuelle
@@ -51,6 +66,8 @@ class ACO(object):
 
         # cas ou q <= q0
         if q <= self.parameter_q0 :
+            if DEBUG_PRECISE :
+                log_pre("   done getting next city")
             return a[0][np.argmax(a[1])]
 
         else :
@@ -60,31 +77,49 @@ class ACO(object):
             a[2][0] = a[1][0]/totalProb
             a[3][0] = a[2][0]
             if a[3][0] >= randNumb:
+                if DEBUG_PRECISE :
+                    log_pre("   done getting next city")
                 return a[0][0]
             for i in range (1,len(a[0])):
                 a[2][i] = a[1][i]/totalProb
                 a[3][i] = a[3][i-1] + a[2][i]
                 if a[3][i] >= randNumb:
+                    if DEBUG_PRECISE :
+                        log_pre("   done getting next city")
                     return a[0][i]
 
     def heuristic2opt(self, sol):
+
+        if DEBUG_PRECISE :
+            log_pre("heuristic 2 opt ...")
 
         permutationhappened = True
         #print('> Best distance so far 1 is %d ' % sol.cost)
         while permutationhappened :
             permutationhappened = False
-            for i in range (0,len(sol.visited)-1):
-                for j in range (i+1,len(sol.visited)):
-                    tempSol = Solution(sol)
-                    tempSol.inverser_ville(i,j)
-                    if tempSol.cost < sol.cost :
+            for i in range (0,len(sol.visited)-2):
+                #log_pre("      i = " + str(i))
+                for j in range (i+2,len(sol.visited)):
+                    #log_pre("      j = " + str(j))
+                    #tempSol = Solution(sol)
+                    #tempSol.inverser_ville(i,j)
+                    J = j+1
+                    if j == len(sol.visited)-1 :
+                        J = 0
+                    priceCurrent = sol.g.get_edge(sol.visited[i],sol.visited[i+1]).cost + sol.g.get_edge(sol.visited[j],sol.visited[J]).cost
+                    priceChanged = sol.g.get_edge(sol.visited[i],sol.visited[j]).cost + sol.g.get_edge(sol.visited[i+1],sol.visited[J]).cost
+                    if priceChanged < priceCurrent :
+                        log_pre("      better result found")
                         permutationhappened = True
-                        sol.visited = tempSol.visited
-                        sol.cost = tempSol.cost
+                        #sol.visited = tempSol.visited
+                        #sol.cost = tempSol.cost
+                        sol.inverser_ville(i,j)
                         #print('> Best distance so far 2 is %d ' % sol.cost)
                         break
                         break
-
+        
+        if DEBUG_PRECISE :
+            log_pre("   done heuristic 2 opt")
 #       best_distance = sol.cost
 #        for values in it.permutations(sol.visited[:-1]):
 #            sol.visited = list(values)
@@ -96,6 +131,10 @@ class ACO(object):
 #                #print('> Best distance so far is %d ' % sol.cost)
 
     def global_update(self, sol):
+
+        if DEBUG_PRECISE :
+            log_pre("global update ...")
+
         for length in range(0, self.graph.N):
             for height in range(0, self.graph.N):
                 self.pheromone[length, height] = (1-self.parameter_rho) * self.pheromone[length, height]
@@ -107,7 +146,13 @@ class ACO(object):
             self.pheromone[sol.visited[ville], sol.visited[ville+1]] = self.pheromone[sol.visited[ville], sol.visited[ville+1]] + self.parameter_rho/sol.cost
             self.pheromone[sol.visited[ville+1], sol.visited[ville]] = self.pheromone[sol.visited[ville+1], sol.visited[ville]] + self.parameter_rho/sol.cost
 
+        if DEBUG_PRECISE :
+            log_pre("   done global update")
+
     def local_update(self, sol):
+        if DEBUG_PRECISE :
+            log_pre("local update ...")
+
         self.pheromone[sol.visited[len(sol.visited)-1], sol.visited[0]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[len(sol.visited)-1], sol.visited[0]]) + (self.parameter_phi*self.pheromone_init[sol.visited[len(sol.visited)-1], sol.visited[0]])
         self.pheromone[sol.visited[0], sol.visited[len(sol.visited)-1]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[0], sol.visited[len(sol.visited)-1]]) + (self.parameter_phi*self.pheromone_init[sol.visited[0], sol.visited[len(sol.visited)-1]])
         
@@ -115,15 +160,23 @@ class ACO(object):
             self.pheromone[sol.visited[ville], sol.visited[ville+1]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[ville], sol.visited[ville+1]]) + (self.parameter_phi*self.pheromone_init[sol.visited[ville], sol.visited[ville+1]])
             self.pheromone[sol.visited[ville+1], sol.visited[ville]] = ((1-self.parameter_phi)*self.pheromone[sol.visited[ville+1], sol.visited[ville]]) + (self.parameter_phi*self.pheromone_init[sol.visited[ville+1], sol.visited[ville]])
 
+        if DEBUG_PRECISE :
+            log_pre("   done local update")
+
     def runACO(self, maxiteration):
+
+        if DEBUG_PRECISE :
+            log_pre("running ACO ...")
 
         for iteration in range (0, maxiteration):
             ants = []
-            print("iteration : "+str(iteration))
+            if DEBUG_GENERAL :
+                log_gen("iteration : "+str(iteration))
             for k in range (0, self.parameter_K) :
                 ant = self.build_sol()
                 self.heuristic2opt(ant)
-                print("   fourmis : "+str(k)+" cost : "+str(ant.cost))
+                if DEBUG_GENERAL :
+                    log_gen("   fourmis : "+str(k)+" cost : "+str(ant.cost))
                 ants.append(ant)
                 if ant.cost < self.best.cost :
                     self.best = ant
@@ -131,6 +184,9 @@ class ACO(object):
             self.global_update(self.best)
             for k in range (0, len(ants)) :
                 self.local_update(ants[k])
+
+        if DEBUG_PRECISE :
+            log_pre("   done running ACO")
 
         return self.best
 
@@ -159,7 +215,19 @@ class ACO(object):
 
         return s
 
+def printResultsACO(aco):
 
 if __name__ == '__main__':
-    aco = ACO(0.9, 2, 0.1, 0.1, 10, 'testa')
+    q0 = 0.8
+    Beta = 4
+    rho = 0.5
+    phi = 0.3
+    K = 10
+    executionTime = []
+    bestValue = []
+    for x in range (0,5) :
+        debut = time.time()
+        aco = ACO(q0, Beta, rho, phi, K, 'qatar')
+        aco.runACO(1)
+        fin = time.time()
     print(aco.runACO(50).cost)
